@@ -15,7 +15,9 @@ import java.util.UUID;
 @Component
 public class KafkaProducer {
     private static Logger logger = LoggerFactory.getLogger(KafkaProducer.class);
+
     @Autowired
+    @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringJavaAutowiredFieldsWarningInspection"})
     private KafkaTemplate<String, String> kafkaTemplate;
 
     public void send() {
