@@ -5,9 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFuture;
 
+import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Administrator
@@ -26,7 +30,15 @@ public class KafkaProducer {
             message.put("id", UUID.randomUUID());
             message.put("title", "第"+i+"个消息");
             logger.info("发送消息 ----->>>>>  message = {}", message.toJSONString());
-            kafkaTemplate.send("hello", message.toJSONString());
+            ListenableFuture<SendResult<String, String>> hello = kafkaTemplate.send("hello", message.toJSONString());
+            SendResult<String, String> result = null;
+            try {
+                result = hello.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+            String sendResult = Objects.requireNonNull(result).toString();
+            logger.info("result===============> " + sendResult);
         }
     }
 
